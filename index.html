@@ -14,7 +14,7 @@
     </style>
   </head>
   <body>
-    <ul id="messages" ng-app='chat' ng-controller='add'><li ng-repeat="x in msgs">{{x}}</ul>
+    <ul id="messages" ng-app='chat' ng-controller='add'><li ng-repeat="x in msgs"> <span><b>{{x.user + ':'}}</b> {{x.message}} </span></li></ul>
     <form id="userInfo" action="">
       	<input id="user" autocomplete="off" /><button>nickname?</button>
     </form>
@@ -48,7 +48,11 @@
 
       var socket = io();
       $('#chatBox').submit(function(){
-        socket.emit('chat message',$('#messages').scope().user+': '+$('#m').val());
+	var msg = $('#m').val();
+	var usr = $('#messages').scope().user
+	var msgObj = { 'user' : usr, 'message' : msg}
+	$('#messages').scope().addMessage(msgObj);
+        socket.emit('chat message', msgObj);
         $('#m').val('');
         return false;
       });
