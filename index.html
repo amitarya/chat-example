@@ -14,7 +14,7 @@
     </style>
   </head>
   <body>
-    <ul id="messages" ng-app='chat' ng-controller='add'><li ng-repeat="x in msgs"> <span><b>{{x.user + ':'}}</b> {{x.message}} </span></li></ul>
+    <ul id="messages" ng-app='chat' ng-controller='add'><li ng-repeat="x in msgs track by $index"> <span><b>{{x.user + ':'}}</b> {{x.message}} </span></li></ul>
     <form id="userInfo" action="">
       	<input id="user" autocomplete="off" /><button>nickname?</button>
     </form>
