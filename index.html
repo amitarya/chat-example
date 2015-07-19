@@ -15,10 +15,13 @@
   </head>
   <body>
     <div id="md" ng-app="chat" ng-controller="add">
-    <ul id="messages"><li ng-repeat="x in msgs">{{x}}</ul>
-    </div>
-    <form action="">
-      <input id="m" autocomplete="off" /><button>Send</button>
+    <ul id="messages"><li ng-repeat="x in msgs">{{user+':'+x}}</ul>
+    </div> 
+    <form id="userInfo" action="">
+      	<input id="user" autocomplete="off" /><button>nickname?</button>
+    </form>
+    <form id="chatBox" style="display:none" action="">
+    	<input id="m" autocomplete="off" /><button>Send</button>
     </form>
     <script src="https://cdn.socket.io/socket.io-1.2.0.js"></script>
     <script src="http://code.jquery.com/jquery-1.11.1.js"></script>
@@ -32,10 +35,21 @@
 		$scope.msgs.push(msg);
 		$scope.$apply();
 	   }
+	   $scope.setUser = function(usr) {
+		$scope.user = usr;
+  	   }
       });
+      
+      $('#userInfo').submit(function(){
+	$('#md').scope().setUser($('#user').val());
+	$('#user').val('');
+	$('#userInfo').toggle();
+	$('#chatBox').toggle();
+	return false;
+       });
 
       var socket = io();
-      $('form').submit(function(){
+      $('#chatBox').submit(function(){
         socket.emit('chat message', $('#m').val());
         $('#m').val('');
         return false;
