@@ -14,21 +14,50 @@
     </style>
   </head>
   <body>
-    <ul id="messages"></ul>
-    <form action="">
-      <input id="m" autocomplete="off" /><button>Send</button>
+    <ul id="messages" ng-app='chat' ng-controller='add'><li ng-repeat="x in msgs track by $index"> <span><b>{{x.user + ':'}}</b> {{x.message}} </span></li></ul>
+    <form id="userInfo" action="">
+      	<input id="user" autocomplete="off" /><button>nickname?</button>
+    </form>
+    <form id="chatBox" style="display:none" action="">
+    	<input id="m" autocomplete="off" /><button>Send</button>
     </form>
     <script src="https://cdn.socket.io/socket.io-1.2.0.js"></script>
     <script src="http://code.jquery.com/jquery-1.11.1.js"></script>
+    <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.3.14/angular.min.js"></script>
+
     <script>
+      var app = angular.module('chat', []);
+      app.controller('add', function($scope) {
+           $scope.msgs = [];
+	   $scope.addMessage = function(msg) {
+		$scope.msgs.push(msg);
+		$scope.$apply();
+	   }
+	   $scope.setUser = function(usr) {
+		$scope.user = usr;
+  	   }
+      });
+      
+      $('#userInfo').submit(function(){
+	$('#messages').scope().setUser($('#user').val());
+	$('#user').val('');
+	$('#userInfo').toggle();
+	$('#chatBox').toggle();
+	return false;
+       });
+
       var socket = io();
-      $('form').submit(function(){
-        socket.emit('chat message', $('#m').val());
+      $('#chatBox').submit(function(){
+	var msg = $('#m').val();
+	var usr = $('#messages').scope().user
+	var msgObj = { 'user' : usr, 'message' : msg}
+	$('#messages').scope().addMessage(msgObj);
+        socket.emit('chat message', msgObj);
         $('#m').val('');
         return false;
       });
       socket.on('chat message', function(msg){
-        $('#messages').append($('<li>').text(msg));
+	$('#messages').scope().addMessage(msg);
       });
     </script>
   </body>
